@@ -39,6 +39,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 WORKSPACE_ID_SCRIPT=${SCRIPT_DIR}/generateWorkspaceIds.sql
 WORKSPACE_ID_FILE=$(mktemp)
+WORKSPACE_BACKUP_DIR=$(mktemp -d)
 
 print_usage(){
     echo "upgrade.sh /path/to/apex/install/files host port sid user password"
@@ -95,10 +96,18 @@ export CLASSPATH=${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
 
 #print_debug
 
-#All workspace exports
-#java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -expWorkspace
-#Export all apps
-#java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -instance
-
 sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${WORKSPACE_ID_SCRIPT} ${WORKSPACE_ID_FILE}
 echo "Workspace IDs saved to: ${WORKSPACE_ID_FILE}"
+
+echo "Temp workspace dir: ${WORKSPACE_BACKUP_DIR}"
+
+while read WID; do
+    echo "Workspace ID: ${WID}"
+    mkdir ${WORKSPACE_BACKUP_DIR}/${WID}
+    cd ${WORKSPACE_BACKUP_DIR}/${WID}
+    java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -expWorkspace -workspaceid ${WID}
+    java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -workspaceid ${WID}
+
+done < ${WORKSPACE_ID_FILE}
+
+echo "Done"
