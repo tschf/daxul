@@ -88,4 +88,4 @@ export CLASSPATH=${CLASSPATH}:${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
 
 #print_debug
 
-java oracle.apex.APEXExport -db example.com:1521:XE -user system -password oracle -expWorkspace
+java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -expWorkspace
