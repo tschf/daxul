@@ -10,7 +10,7 @@ spool &1
 
 select to_char(workspace_id)
 from apex_workspaces
-where source_identifier is null;
+where source_identifier is not null;
 
 spool off
 exit
