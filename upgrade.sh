@@ -20,6 +20,7 @@ OJDBC_UNDEFINED=4
 # Arguments
 EXPECTED_ARGS=6
 
+# Database parameters
 APEX_PATH=$1
 DB_HOST=$2
 DB_PORT=$3
@@ -27,9 +28,17 @@ DB_SID=$4
 DB_USER=$5
 DB_PASS=$6
 
+# Backup program paths/dependencies
 OJDBC_PATH=lib/ojdbc5.jar
 BACKUP_PROG_BASE_DIR=${APEX_PATH}/utilities
 BACKUP_PROG_FULL_PATH=${BACKUP_PROG_BASE_DIR}/oracle/apex/APEXExport.class
+
+# Get dir of this script so we can reference other scripts.
+# Idea taken from: http://stackoverflow.com/a/246128/3476713
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+WORKSPACE_ID_SCRIPT=${SCRIPT_DIR}/generateWorkspaceIds.sql
+WORKSPACE_ID_FILE=$(mktemp)
 
 print_usage(){
     echo "upgrade.sh /path/to/apex/install/files host port sid user password"
@@ -82,8 +91,14 @@ fi
 
 
 # Error checking all done, now we need to set the classpath so it can be run
-export CLASSPATH=${CLASSPATH}:${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
+export CLASSPATH=${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
 
 #print_debug
 
-java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -expWorkspace
+#All workspace exports
+#java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -expWorkspace
+#Export all apps
+#java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -instance
+
+sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${WORKSPACE_ID_SCRIPT} ${WORKSPACE_ID_FILE}
+echo "Workspace IDs saved to: ${WORKSPACE_ID_FILE}"
