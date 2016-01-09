@@ -66,10 +66,8 @@ fi
 #
 # By default set it to 1, but if that doesn't exist, try pointing it to 2.
 if [[ -e ${ORACLE_HOME}/jdbc/${OJDBC_PATH} ]]; then
-    echo "a"
     OJDBC_PATH=${ORACLE_HOME}/jdbc/${OJDBC_PATH}
 elif [[ -e ${ORACLE_HOME}/${OJDBC_PATH} ]]; then
-    echo "b"
     OJDBC_PATH=${ORACLE_HOME}/${OJDBC_PATH}
 else
     echo "Could not find ojdbc5.jar. Is Oracle properly installed?" >&2
