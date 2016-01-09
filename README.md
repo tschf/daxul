@@ -1,8 +1,8 @@
-# bauler - alternate upgrade for APEX 
+# bauler - alternate upgrade for APEX
 
 The problem?
 
-APEX is a free product. Oracle XE is a free product. Oracle XE editions are never patched, but APEX is. If you only deal with XE, it becomes very difficult to upgrade because APEX because Oracle only provides patch sets to paying customers. The full installation media you can download from the website doesn't include an upgrade path - only the full installation of the APEX schema, so it will not succeed.
+APEX is a free product. Oracle XE is a free product. Oracle XE editions are never patched, but APEX is. If you only deal with XE, it becomes very difficult to upgrade APEX because Oracle only provides patch sets to paying customers. The full installation media you can download from the website doesn't include an upgrade path - only the full installation of the APEX schema, so it will not succeed.
 
 So if you want to upgrade, you other need to get your hands on the patch sets, or drop the APEX schema and install afresh.
 
