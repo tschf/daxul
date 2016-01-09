@@ -41,6 +41,8 @@ WORKSPACE_ID_SCRIPT=${SCRIPT_DIR}/generateWorkspaceIds.sql
 WORKSPACE_ID_FILE=$(mktemp)
 WORKSPACE_BACKUP_DIR=$(mktemp -d)
 
+UNINSTALL_SCRIPT=${SCRIPT_DIR}/uninstallApex.sql
+
 print_usage(){
     echo "upgrade.sh /path/to/apex/install/files host port sid user password"
 }
@@ -110,4 +112,4 @@ while read WID; do
 
 done < ${WORKSPACE_ID_FILE}
 
-echo "Done"
+sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${UNINSTALL_SCRIPT} ${APEX_PATH}/apxremov.sql
