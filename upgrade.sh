@@ -42,6 +42,7 @@ WORKSPACE_ID_FILE=$(mktemp)
 WORKSPACE_BACKUP_DIR=$(mktemp -d)
 
 UNINSTALL_SCRIPT=${SCRIPT_DIR}/uninstallApex.sql
+INSTALL_SCRIPT=${SCRIPT_DIR}/installApex.sql
 
 print_usage(){
     echo "upgrade.sh /path/to/apex/install/files host port sid user password"
@@ -111,5 +112,17 @@ while read WID; do
     java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -workspaceid ${WID}
 
 done < ${WORKSPACE_ID_FILE}
-
+echo "Uninstalling"
 sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${UNINSTALL_SCRIPT} ${APEX_PATH}/apxremov.sql
+echo "Uninstalling complete"
+
+echo "Installing"
+# Need to change into the directory where the scripts are, since the installation
+# script is referencing other scripts - but expecting them in the same current
+# working directory.
+cd ${APEX_PATH}
+sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${APEX_PATH}/apexins.sql SYSAUX SYSAUX TEMP /i/
+
+#copy images
+
+#echo "Installing complete"
