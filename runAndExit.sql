@@ -1,3 +1,4 @@
---Wrapper for apex uninstallation so that the script exits upon completion.
-@&1 --Full path to apxremov.sql
+--Wrapper for running scripts such that sql*plus will exit on completion
+--and the desired script is passed in as the first parameter.
+@&1 
 exit
