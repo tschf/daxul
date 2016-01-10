@@ -41,8 +41,7 @@ WORKSPACE_ID_SCRIPT=${SCRIPT_DIR}/generateWorkspaceIds.sql
 WORKSPACE_ID_FILE=$(mktemp)
 WORKSPACE_BACKUP_DIR=$(mktemp -d)
 
-UNINSTALL_SCRIPT=${SCRIPT_DIR}/uninstallApex.sql
-INSTALL_SCRIPT=${SCRIPT_DIR}/installApex.sql
+RUN_AND_EXIT_SCRIPT=${SCRIPT_DIR}/runAndExit.sql
 
 print_usage(){
     echo "upgrade.sh /path/to/apex/install/files host port sid user password"
@@ -113,7 +112,7 @@ while read WID; do
 
 done < ${WORKSPACE_ID_FILE}
 echo "Uninstalling"
-sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${UNINSTALL_SCRIPT} ${APEX_PATH}/apxremov.sql
+sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${RUN_AND_EXIT_SCRIPT} ${APEX_PATH}/apxremov.sql
 echo "Uninstalling complete"
 
 echo "Installing"
@@ -126,3 +125,13 @@ sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${APEX_PATH}/ape
 #copy images
 
 #echo "Installing complete"
+
+# Restore workspaces and applications
+while read WID; do
+    sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${WORKSPACE_BACKUP_DIR}/${WID}/w${WID}.sql
+
+    for apexApp in ${WORKSPACE_BACKUP_DIR}/${WID}/f*.sql; do
+        echo "Installing ${apexApp}"
+        sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${apexApp}
+    done
+done < ${WORKSPACE_ID_FILE}
