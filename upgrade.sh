@@ -41,6 +41,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 WORKSPACE_ID_SCRIPT=${SCRIPT_DIR}/generateWorkspaceIds.sql
 WORKSPACE_ID_FILE=$(mktemp)
 WORKSPACE_BACKUP_DIR=$(mktemp -d)
+INSTANCE_CONFIG_BACKUP_SCRIPT=${SCRIPT_DIR}/backupInstanceConfig.sql
+INSTANCE_CONFIG_FILE=$(mktemp)
 
 RUN_AND_EXIT_SCRIPT=${SCRIPT_DIR}/runAndExit.sql
 
@@ -99,7 +101,10 @@ export CLASSPATH=${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
 
 #print_debug
 
+# Output all workspace id's to a text file
 sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${WORKSPACE_ID_SCRIPT} ${WORKSPACE_ID_FILE}
+# Backup instance config for later restoration
+sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${INSTANCE_CONFIG_FILE}
 
 TOTAL_APP_COUNT=0
 while read WID; do
@@ -117,6 +122,7 @@ echo "Uninstalling"
 NUM_WORKSPACES=$(ls -l ${WORKSPACE_BACKUP_DIR} | wc -l)
 echo "A total of ${NUM_WORKSPACES} workspaces were backed up, and ${TOTAL_APP_COUNT} applications".
 echo "You can view the backed up workspaces/applications at: ${WORKSPACE_BACKUP_DIR}"
+echo "You can view the backed up instance config at: ${INSTANCE_CONFIG_FILE}"
 echo "If you continue, Application Express will be completely uninstalled and then re-installed"
 echo "All users in the internal workspace will not be restored"
 echo "You will have to re-do the instance configuration"
