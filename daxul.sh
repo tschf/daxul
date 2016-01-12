@@ -174,7 +174,7 @@ echo "begin" > ${RESTORE_SCRIPT}
 
 while read BACKED_PROPERTY; do
 
-    IFS='=' read -r -a INSTANCE_PARAM <<< ${BACKED_PROPERTY}
+    IFS='=' read -ra INSTANCE_PARAM <<< "${BACKED_PROPERTY}"
     # If value isn't empty, append update call to the script
     if [[ ! -z ${INSTANCE_PARAM[1]//} ]]; then
         echo "APEX_INSTANCE_ADMIN.SET_PARAMETER('${INSTANCE_PARAM[0]}', '${INSTANCE_PARAM[1]}');" >> ${RESTORE_SCRIPT}
