@@ -1,3 +1,11 @@
+/*
+
+12/01/2016: Some parameters don't want to save, due to being unknown. Refer
+to issue #2 (https://github.com/tschf/daxul/issues/2). Commented out the
+affected lines until this can be resolved.
+
+*/
+
 set echo off
 set verify off
 set feedback off
@@ -7,7 +15,7 @@ set termout off
 set pagesize 0
 set serveroutput on
 
-spool &1
+spool test.txt
 
 begin
 
@@ -19,15 +27,15 @@ begin
     dbms_output.put_line('WEBSHEET_SQL_ACCESS=' || apex_instance_admin.get_parameter('WEBSHEET_SQL_ACCESS'));
 
     --Package app install options
-    dbms_output.put_line('PKG_APP_AUTH_ALLOW_HHEAD=' || apex_instance_admin.get_parameter('PKG_APP_AUTH_ALLOW_HHEAD'));
-    dbms_output.put_line('PKG_APP_AUTH_ALLOW_LDAP=' || apex_instance_admin.get_parameter('PKG_APP_AUTH_ALLOW_LDAP'));
-    dbms_output.put_line('PKG_APP_AUTH_ALLOW_SSO=' || apex_instance_admin.get_parameter('PKG_APP_AUTH_ALLOW_SSO'));
+    --dbms_output.put_line('PKG_APP_AUTH_ALLOW_HHEAD=' || apex_instance_admin.get_parameter('PKG_APP_AUTH_ALLOW_HHEAD'));
+    --dbms_output.put_line('PKG_APP_AUTH_ALLOW_LDAP=' || apex_instance_admin.get_parameter('PKG_APP_AUTH_ALLOW_LDAP'));
+    --dbms_output.put_line('PKG_APP_AUTH_ALLOW_SSO=' || apex_instance_admin.get_parameter('PKG_APP_AUTH_ALLOW_SSO'));
 
     --SQL Workshop
-    dbms_output.put_line('SQL_COMMAND_MAX_INACTIVITY=' || apex_instance_admin.get_parameter('SQL_COMMAND_MAX_INACTIVITY'));
-    dbms_output.put_line('SQL_SCRIPT_MAX_OUTPUT_SIZE=' || apex_instance_admin.get_parameter('SQL_SCRIPT_MAX_OUTPUT_SIZE'));
+    --dbms_output.put_line('SQL_COMMAND_MAX_INACTIVITY=' || apex_instance_admin.get_parameter('SQL_COMMAND_MAX_INACTIVITY'));
+    --dbms_output.put_line('SQL_SCRIPT_MAX_OUTPUT_SIZE=' || apex_instance_admin.get_parameter('SQL_SCRIPT_MAX_OUTPUT_SIZE'));
     dbms_output.put_line('WORKSPACE_MAX_OUTPUT_SIZE=' || apex_instance_admin.get_parameter('WORKSPACE_MAX_OUTPUT_SIZE'));
-    dbms_output.put_line('MAX_SCRIPT_SIZE=' || apex_instance_admin.get_parameter('MAX_SCRIPT_SIZE'));
+    --dbms_output.put_line('MAX_SCRIPT_SIZE=' || apex_instance_admin.get_parameter('MAX_SCRIPT_SIZE'));
     dbms_output.put_line('ENABLE_TRANSACTIONAL_SQL=' || apex_instance_admin.get_parameter('ENABLE_TRANSACTIONAL_SQL'));
     dbms_output.put_line('RESTFUL_SERVICES_ENABLED=' || apex_instance_admin.get_parameter('RESTFUL_SERVICES_ENABLED'));
 
@@ -49,7 +57,7 @@ begin
     dbms_output.put_line('DISABLE_ADMIN_LOGIN=' || apex_instance_admin.get_parameter('DISABLE_ADMIN_LOGIN'));
     dbms_output.put_line('DISABLE_WORKSPACE_LOGIN=' || apex_instance_admin.get_parameter('DISABLE_WORKSPACE_LOGIN'));
     dbms_output.put_line('ALLOW_PUBLIC_FILE_UPLOAD=' || apex_instance_admin.get_parameter('ALLOW_PUBLIC_FILE_UPLOAD'));
-    dbms_output.put_line('RESTRICT_IP_RANGE=' || apex_instance_admin.get_parameter('RESTRICT_IP_RANGE'));
+    --dbms_output.put_line('RESTRICT_IP_RANGE=' || apex_instance_admin.get_parameter('RESTRICT_IP_RANGE'));
     dbms_output.put_line('INSTANCE_PROXY=' || apex_instance_admin.get_parameter('INSTANCE_PROXY'));
     dbms_output.put_line('CHECKSUM_HASH_FUNCTION=' || apex_instance_admin.get_parameter('CHECKSUM_HASH_FUNCTION'));
     dbms_output.put_line('REJOIN_EXISTING_SESSIONS=' || apex_instance_admin.get_parameter('REJOIN_EXISTING_SESSIONS'));
@@ -57,15 +65,15 @@ begin
 
     --HTTP Protocol
     dbms_output.put_line('REQUIRE_HTTPS=' || apex_instance_admin.get_parameter('REQUIRE_HTTPS'));
-    dbms_output.put_line('HTTP_STS_MAX_AGE=' || apex_instance_admin.get_parameter('HTTP_STS_MAX_AGE'));
+    --dbms_output.put_line('HTTP_STS_MAX_AGE=' || apex_instance_admin.get_parameter('HTTP_STS_MAX_AGE'));
     dbms_output.put_line('REQUIRE_OUT_HTTPS=' || apex_instance_admin.get_parameter('REQUIRE_OUT_HTTPS'));
-    dbms_output.put_line('HTTP_RESPONSE_HEADERS=' || apex_instance_admin.get_parameter('HTTP_RESPONSE_HEADERS'));
+    --dbms_output.put_line('HTTP_RESPONSE_HEADERS=' || apex_instance_admin.get_parameter('HTTP_RESPONSE_HEADERS'));
 
     --RESTful access
     dbms_output.put_line('ALLOW_REST=' || apex_instance_admin.get_parameter('ALLOW_REST'));
 
     --RAS
-    dbms_output.put_line('ALLOW_RAS=' || apex_instance_admin.get_parameter('ALLOW_RAS'));
+    --dbms_output.put_line('ALLOW_RAS=' || apex_instance_admin.get_parameter('ALLOW_RAS'));
 
     --Session timeout
     dbms_output.put_line('MAX_SESSION_IDLE_SEC=' || apex_instance_admin.get_parameter('MAX_SESSION_IDLE_SEC'));
@@ -80,7 +88,7 @@ begin
     dbms_output.put_line('WORKSPACE_MAX_FILE_BYTES=' || apex_instance_admin.get_parameter('WORKSPACE_MAX_FILE_BYTES'));
 
     --Region and Web Service Excluded Domains
-    dbms_output.put_line('BAD_URLS=' || apex_instance_admin.get_parameter('BAD_URLS'));
+    --dbms_output.put_line('BAD_URLS=' || apex_instance_admin.get_parameter('BAD_URLS'));
 
     --Authentication Control
     --General Settings
@@ -120,7 +128,7 @@ begin
 
     --Email provisioning
     dbms_output.put_line('DISABLE_WS_PROV=' || apex_instance_admin.get_parameter('DISABLE_WS_PROV'));
-    dbms_output.put_line('DISABLE_WS_MSG=' || apex_instance_admin.get_parameter('DISABLE_WS_MSG'));
+    --dbms_output.put_line('DISABLE_WS_MSG=' || apex_instance_admin.get_parameter('DISABLE_WS_MSG'));
 
     --Storage
     dbms_output.put_line('REQ_NEW_SCHEMA=' || apex_instance_admin.get_parameter('REQ_NEW_SCHEMA'));
@@ -150,7 +158,7 @@ begin
     dbms_output.put_line('PRINT_SVR_HOST=' || apex_instance_admin.get_parameter('PRINT_SVR_HOST'));
     dbms_output.put_line('PRINT_SVR_PORT=' || apex_instance_admin.get_parameter('PRINT_SVR_PORT'));
     dbms_output.put_line('PRINT_SVR_SCRIPT=' || apex_instance_admin.get_parameter('PRINT_SVR_SCRIPT'));
-    dbms_output.put_line('PRINT_SVR_TIMEOUT=' || apex_instance_admin.get_parameter('PRINT_SVR_TIMEOUT'));
+    --dbms_output.put_line('PRINT_SVR_TIMEOUT=' || apex_instance_admin.get_parameter('PRINT_SVR_TIMEOUT'));
 
     --Help
     dbms_output.put_line('SYSTEM_HELP_URL=' || apex_instance_admin.get_parameter('SYSTEM_HELP_URL'));
@@ -160,17 +168,17 @@ begin
     dbms_output.put_line('APPLICATION_ID_MAX=' || apex_instance_admin.get_parameter('APPLICATION_ID_MAX'));
 
     --Workspace purge Settings
-    dbms_output.put_line('PURGE_ENABLED=' || apex_instance_admin.get_parameter('PURGE_ENABLED'));
-    dbms_output.put_line('PURGE_LANG=' || apex_instance_admin.get_parameter('PURGE_LANG'));
-    dbms_output.put_line('PURGE_ADMIN_EMAIL=' || apex_instance_admin.get_parameter('PURGE_ADMIN_EMAIL'));
-    dbms_output.put_line('PURGE_SUMMARY_EMAIL_TO=' || apex_instance_admin.get_parameter('PURGE_SUMMARY_EMAIL_TO'));
-    dbms_output.put_line('PURGE_DAYS_TO_PURGE=' || apex_instance_admin.get_parameter('PURGE_DAYS_TO_PURGE'));
-    dbms_output.put_line('PURGE_REMINDER_DAYS_IN_ADVANCE=' || apex_instance_admin.get_parameter('PURGE_REMINDER_DAYS_IN_ADVANCE'));
-    dbms_output.put_line('PURGE_DAYS_INACTIVE=' || apex_instance_admin.get_parameter('PURGE_DAYS_INACTIVE'));
-    dbms_output.put_line('PURGE_GRACE_PERIOD_DAYS=' || apex_instance_admin.get_parameter('PURGE_GRACE_PERIOD_DAYS'));
-    dbms_output.put_line('PURGE_MAX_RUN_HOURS=' || apex_instance_admin.get_parameter('PURGE_MAX_RUN_HOURS'));
-    dbms_output.put_line('PURGE_MAX_WORKSPACES=' || apex_instance_admin.get_parameter('PURGE_MAX_WORKSPACES'));
-    dbms_output.put_line('PURGE_MAX_EMAILS=' || apex_instance_admin.get_parameter('PURGE_MAX_EMAILS'));
+    --dbms_output.put_line('PURGE_ENABLED=' || apex_instance_admin.get_parameter('PURGE_ENABLED'));
+    --dbms_output.put_line('PURGE_LANG=' || apex_instance_admin.get_parameter('PURGE_LANG'));
+    --dbms_output.put_line('PURGE_ADMIN_EMAIL=' || apex_instance_admin.get_parameter('PURGE_ADMIN_EMAIL'));
+    --dbms_output.put_line('PURGE_SUMMARY_EMAIL_TO=' || apex_instance_admin.get_parameter('PURGE_SUMMARY_EMAIL_TO'));
+    --dbms_output.put_line('PURGE_DAYS_TO_PURGE=' || apex_instance_admin.get_parameter('PURGE_DAYS_TO_PURGE'));
+    --dbms_output.put_line('PURGE_REMINDER_DAYS_IN_ADVANCE=' || apex_instance_admin.get_parameter('PURGE_REMINDER_DAYS_IN_ADVANCE'));
+    --dbms_output.put_line('PURGE_DAYS_INACTIVE=' || apex_instance_admin.get_parameter('PURGE_DAYS_INACTIVE'));
+    --dbms_output.put_line('PURGE_GRACE_PERIOD_DAYS=' || apex_instance_admin.get_parameter('PURGE_GRACE_PERIOD_DAYS'));
+    --dbms_output.put_line('PURGE_MAX_RUN_HOURS=' || apex_instance_admin.get_parameter('PURGE_MAX_RUN_HOURS'));
+    --dbms_output.put_line('PURGE_MAX_WORKSPACES=' || apex_instance_admin.get_parameter('PURGE_MAX_WORKSPACES'));
+    --dbms_output.put_line('PURGE_MAX_EMAILS=' || apex_instance_admin.get_parameter('PURGE_MAX_EMAILS'));
 
     --System updates (page 70 modal page)
     dbms_output.put_line('CHECK_FOR_UPDATES=' || apex_instance_admin.get_parameter('CHECK_FOR_UPDATES'));
