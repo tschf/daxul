@@ -18,11 +18,11 @@ This should only be used for minor updates - major updates should be installed w
 Usage:
 
 ```
-./daxul.sh /path/to/apex/install/files host port sid system_password sys_password
+sudo -E ./daxul.sh /path/to/apex/install/files host port sid system_password sys_password /path/to/images/destination/
 ```
 
 Current caveats:
 
 * This should be run from the server apex is installed on - so that images can be updated
 * Users against the internal workspace will be lost
-* instance configuration not backed up/restored
+* not all instance configuration not backed up/restored
