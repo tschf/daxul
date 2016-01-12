@@ -26,8 +26,10 @@ APEX_PATH=$1
 DB_HOST=$2
 DB_PORT=$3
 DB_SID=$4
-DB_USER=$5
-DB_PASS=$6
+SYSTEM_USER=SYSTEM
+SYSTEM_PASS=$5
+SYS_USER=SYS
+SYS_PASS=$6
 
 # Backup program paths/dependencies
 OJDBC_PATH=lib/ojdbc5.jar
@@ -56,8 +58,10 @@ print_debug(){
     echo "HOST: ${DB_HOST}"
     echo "PORT: ${DB_PORT}"
     echo "SID: ${DB_SID}"
-    echo "USER: ${DB_USER}"
-    echo "PASSWORD: ${DB_PASS}"
+    echo "SYSTEM USER: ${SYSTEM_USER}"
+    echo "SYSTEM PASSWORD: ${SYSTEM_PASS}"
+    echo "SYS USER: ${SYS_USER}"
+    echo "SYS PASSWORD: ${SYS_PASS}"
     echo "CLASSPATH: ${CLASSPATH}"
 }
 
@@ -104,17 +108,17 @@ export CLASSPATH=${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
 #print_debug
 
 # Output all workspace id's to a text file
-sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${WORKSPACE_ID_SCRIPT} ${WORKSPACE_ID_FILE}
+sqlplus ${SYSTEM_USER}/${SYSTEM_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${WORKSPACE_ID_SCRIPT} ${WORKSPACE_ID_FILE}
 # Backup instance config for later restoration
-sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${PRE_INSTANCE_CONFIG_FILE}
+sqlplus ${SYSTEM_USER}/${SYSTEM_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${PRE_INSTANCE_CONFIG_FILE}
 
 TOTAL_APP_COUNT=0
 while read WID; do
     echo "Workspace ID: ${WID}"
     mkdir ${WORKSPACE_BACKUP_DIR}/${WID}
     cd ${WORKSPACE_BACKUP_DIR}/${WID}
-    java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -expWorkspace -workspaceid ${WID}
-    java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${DB_USER} -password ${DB_PASS} -workspaceid ${WID}
+    java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${SYSTEM_USER} -password ${SYSTEM_PASS} -expWorkspace -workspaceid ${WID}
+    java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${SYSTEM_USER} -password ${SYSTEM_PASS} -workspaceid ${WID}
 
     NUM_APPS=$(ls -l ${WORKSPACE_BACKUP_DIR}/${WID} | wc -l)
     TOTAL_APP_COUNT=$(($TOTAL_APP_COUNT+$NUM_APPS))
@@ -135,10 +139,10 @@ if [[ ! "${CONFIRM_CONTINUE^^}" = "Y" ]] && [[ ! "${CONFIRM_CONTINUE^^}" = "YES"
     exit ${USER_EXIT}
 fi
 
-sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${RUN_AND_EXIT_SCRIPT} ${APEX_PATH}/apxremov.sql
+sqlplus ${SYS_USER}/${SYS_PASSWORD}@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${RUN_AND_EXIT_SCRIPT} ${APEX_PATH}/apxremov.sql
 echo "Uninstalling complete"
 
-echo "Installing"
+echo "Installing APEX"
 # Need to change into the directory where the scripts are, since the installation
 # script is referencing other scripts - but expecting them in the same current
 # working directory.
@@ -151,11 +155,11 @@ sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${APEX_PATH}/ape
 
 # Restore workspaces and applications
 while read WID; do
-    sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${WORKSPACE_BACKUP_DIR}/${WID}/w${WID}.sql
+    sqlplus ${SYSTEM_USER}/${SYSTEM_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${WORKSPACE_BACKUP_DIR}/${WID}/w${WID}.sql
 
     for apexApp in ${WORKSPACE_BACKUP_DIR}/${WID}/f*.sql; do
         echo "Installing ${apexApp}"
-        sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${apexApp}
+        sqlplus ${SYSTEM_USER}/${SYSTEM_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${apexApp}
     done
 done < ${WORKSPACE_ID_FILE}
 
@@ -179,10 +183,10 @@ echo "/" >> ${RESTORE_SCRIPT}
 echo "exit" >> ${RESTORE_SCRIPT}
 
 # Before updating, get the current config
-sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${POST_INSTANCE_CONFIG_FILE}
+sqlplus ${SYSTEM_USER}/${SYSTEM_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${POST_INSTANCE_CONFIG_FILE}
 
 # Now, restore settings as they were before the upgrade
-sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RESTORE_SCRIPT}
+sqlplus ${SYSTEM_USER}/${SYSTEM_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RESTORE_SCRIPT}
 
 echo "Restoration complete, script saved to ${RESTORE_SCRIPT}."
 echo "You can review the instance config files at:"
