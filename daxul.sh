@@ -42,7 +42,9 @@ WORKSPACE_ID_SCRIPT=${SCRIPT_DIR}/generateWorkspaceIds.sql
 WORKSPACE_ID_FILE=$(mktemp)
 WORKSPACE_BACKUP_DIR=$(mktemp -d)
 INSTANCE_CONFIG_BACKUP_SCRIPT=${SCRIPT_DIR}/backupInstanceConfig.sql
-INSTANCE_CONFIG_FILE=$(mktemp)
+PRE_INSTANCE_CONFIG_FILE=$(mktemp)
+POST_INSTANCE_CONFIG_FILE=$(mktemp)
+RESTORE_SCRIPT=$(mktemp)
 
 RUN_AND_EXIT_SCRIPT=${SCRIPT_DIR}/runAndExit.sql
 
@@ -104,7 +106,7 @@ export CLASSPATH=${OJDBC_PATH}:${BACKUP_PROG_BASE_DIR}
 # Output all workspace id's to a text file
 sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${WORKSPACE_ID_SCRIPT} ${WORKSPACE_ID_FILE}
 # Backup instance config for later restoration
-sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${INSTANCE_CONFIG_FILE}
+sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${PRE_INSTANCE_CONFIG_FILE}
 
 TOTAL_APP_COUNT=0
 while read WID; do
@@ -122,7 +124,7 @@ echo "Uninstalling"
 NUM_WORKSPACES=$(ls -l ${WORKSPACE_BACKUP_DIR} | wc -l)
 echo "A total of ${NUM_WORKSPACES} workspaces were backed up, and ${TOTAL_APP_COUNT} applications".
 echo "You can view the backed up workspaces/applications at: ${WORKSPACE_BACKUP_DIR}"
-echo "You can view the backed up instance config at: ${INSTANCE_CONFIG_FILE}"
+echo "You can view the backed up instance config at: ${PRE_INSTANCE_CONFIG_FILE}"
 echo "If you continue, Application Express will be completely uninstalled and then re-installed"
 echo "All users in the internal workspace will not be restored"
 echo "You will have to re-do the instance configuration"
@@ -156,3 +158,33 @@ while read WID; do
         sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RUN_AND_EXIT_SCRIPT} ${apexApp}
     done
 done < ${WORKSPACE_ID_FILE}
+
+echo "Restoring instance configuration"
+
+echo "begin" > ${RESTORE_SCRIPT}
+
+while read BACKED_PROPERTY; do
+
+    IFS='=' read -r -a INSTANCE_PARAM <<< ${BACKED_PROPERTY}
+    # If value isn't empty, append update call to the script
+    if [[ ! -z ${INSTANCE_PARAM[1]//} ]]; then
+        echo "APEX_INSTANCE_ADMIN.SET_PARAMETER('${INSTANCE_PARAM[0]}', '${INSTANCE_PARAM[1]}');" >> ${RESTORE_SCRIPT}
+    fi
+
+done < ${PRE_INSTANCE_CONFIG_FILE}
+
+echo "end;" >> ${RESTORE_SCRIPT}
+echo "/" >> ${RESTORE_SCRIPT}
+
+echo "exit" >> ${RESTORE_SCRIPT}
+
+# Before updating, get the current config
+sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${INSTANCE_CONFIG_BACKUP_SCRIPT} ${POST_INSTANCE_CONFIG_FILE}
+
+# Now, restore settings as they were before the upgrade
+sqlplus ${DB_USER}/${DB_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} @${RESTORE_SCRIPT}
+
+echo "Restoration complete, script saved to ${RESTORE_SCRIPT}."
+echo "You can review the instance config files at:"
+echo "- Your existing settings before the upgrade: ${PRE_INSTANCE_CONFIG_FILE}"
+echo "- The settings after upgrading APEX and before restoration: ${POST_INSTANCE_CONFIG_FILE}"
