@@ -136,7 +136,7 @@ echo "You can view the backed up workspaces/applications at: ${WORKSPACE_BACKUP_
 echo "You can view the backed up instance config at: ${PRE_INSTANCE_CONFIG_FILE}"
 echo "If you continue, Application Express will be completely uninstalled and then re-installed"
 echo "All users in the internal workspace will not be restored"
-echo "You will have to re-do the instance configuration"
+echo "You may have to re-do some of the instance configuration"
 read -p "Are you sure you want to continue?: " CONFIRM_CONTINUE
 
 # ^^converts it to uppercase. Idea grabbed from: http://stackoverflow.com/a/2265268/3476713
