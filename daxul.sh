@@ -142,7 +142,7 @@ if [[ ! "${CONFIRM_CONTINUE^^}" = "Y" ]] && [[ ! "${CONFIRM_CONTINUE^^}" = "YES"
     exit ${USER_EXIT}
 fi
 
-sqlplus ${SYS_USER}/${SYS_PASSWORD}@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${RUN_AND_EXIT_SCRIPT} ${APEX_PATH}/apxremov.sql
+sqlplus ${SYS_USER}/${SYS_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${RUN_AND_EXIT_SCRIPT} ${APEX_PATH}/apxremov.sql
 
 echo "Uninstalling complete"
 
