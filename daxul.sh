@@ -52,7 +52,7 @@ RESTORE_SCRIPT=$(mktemp)
 RUN_AND_EXIT_SCRIPT=${SCRIPT_DIR}/runAndExit.sql
 
 print_usage(){
-    echo "daxul.sh /path/to/apex/install/files host port sid user password"
+    echo "daxul.sh /path/to/apex/install/files host port sid system_password sys_password /path/to/images/destination/"
 }
 
 print_debug(){
