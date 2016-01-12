@@ -19,7 +19,7 @@ OJDBC_UNDEFINED=4
 USER_EXIT=5
 
 # Arguments
-EXPECTED_ARGS=6
+EXPECTED_ARGS=7
 
 # Database parameters
 APEX_PATH=$1
@@ -30,6 +30,7 @@ SYSTEM_USER=SYSTEM
 SYSTEM_PASS=$5
 SYS_USER=SYS
 SYS_PASS=$6
+IMAGE_PATH=$7
 
 # Backup program paths/dependencies
 OJDBC_PATH=lib/ojdbc5.jar
@@ -51,7 +52,7 @@ RESTORE_SCRIPT=$(mktemp)
 RUN_AND_EXIT_SCRIPT=${SCRIPT_DIR}/runAndExit.sql
 
 print_usage(){
-    echo "upgrade.sh /path/to/apex/install/files host port sid user password"
+    echo "daxul.sh /path/to/apex/install/files host port sid user password"
 }
 
 print_debug(){
@@ -63,6 +64,8 @@ print_debug(){
     echo "SYS USER: ${SYS_USER}"
     echo "SYS PASSWORD: ${SYS_PASS}"
     echo "CLASSPATH: ${CLASSPATH}"
+    echo "IMAGE PATH: ${IMAGE_PATH}"
+    echo "APEX PATH: ${APEX_PATH}"
 }
 
 # Make sure the correct number of arguments were received
@@ -140,6 +143,7 @@ if [[ ! "${CONFIRM_CONTINUE^^}" = "Y" ]] && [[ ! "${CONFIRM_CONTINUE^^}" = "YES"
 fi
 
 sqlplus ${SYS_USER}/${SYS_PASSWORD}@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${RUN_AND_EXIT_SCRIPT} ${APEX_PATH}/apxremov.sql
+
 echo "Uninstalling complete"
 
 echo "Installing APEX"
@@ -149,9 +153,10 @@ echo "Installing APEX"
 cd ${APEX_PATH}
 sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${APEX_PATH}/apexins.sql SYSAUX SYSAUX TEMP /i/
 
-#copy images
-
-#echo "Installing complete"
+echo "Updating images"
+sudo rm -rf ${IMAGE_PATH}/*
+sudo cp -r ${APEX_PATH}/images/* ${IMAGE_PATH}/
+echo "Image update complete"
 
 # Restore workspaces and applications
 while read WID; do
