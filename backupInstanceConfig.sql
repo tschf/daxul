@@ -15,7 +15,7 @@ set termout off
 set pagesize 0
 set serveroutput on
 
-spool test.txt
+spool &1
 
 begin
 
