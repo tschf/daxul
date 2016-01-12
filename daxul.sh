@@ -81,6 +81,8 @@ if [[ ! -e ${ORACLE_HOME} ]]; then
     exit ${ORACLE_UNDEFINED}
 fi
 
+export PATH=${PATH}:${ORACLE_HOME}/bin
+
 # The program requires Oracle JDBC drivers in the classpath. Based on my two
 # example cases of Oracle installations (the XE server and my workstation)
 # it seems there are two possible locations:
