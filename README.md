@@ -18,7 +18,7 @@ This should only be used for minor updates - major updates should be installed w
 Usage:
 
 ```
-./upgrade.sh /path/to/apex/install/files host port sid system_password sys_password
+./daxul.sh /path/to/apex/install/files host port sid system_password sys_password
 ```
 
 Current caveats:
