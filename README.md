@@ -1,6 +1,6 @@
-# bauler - upgrade for APEX patch on XE
+# daxul - upgrade for APEX patch on XE
 
-bauler is a utility to upgrade APEX on an XE database. The reason this is needed is that Oracle provides patch sets for APEX but only for paying customers. Seeing as though both Oracle XE and APEX are free, it makes sense you would need a method to upgrade to the latest version (which is currently difficult without the patch sets).
+daxul is a utility to upgrade APEX on an XE database. The reason this is needed is that Oracle provides patch sets for APEX but only for paying customers. Seeing as though both Oracle XE and APEX are free, it makes sense you would need a method to upgrade to the latest version (which is currently difficult without the patch sets).
 
 A way around this is to backup all workspaces, remove APEX and then re-install everything.
 
