@@ -1,5 +1,5 @@
 #!/bin/bash
-# upgrade.sh
+# daxul.sh
 # Program to upgrade the APEX schema in the database. This is useful when
 # access to the patchsets is not available (when you're not a paying Oracle
 # customer).
@@ -9,7 +9,7 @@
 # installation files, so ORACLE_HOME is expected to be set.
 #
 # Basically, the goal is to export all workspaces and applications; drop the apex
-# schema and re run in the apex installation. Future goal, handle instance config
+# schema and re run in the apex installation. 
 
 # Define exit codes
 INVALID_ARGS=1
