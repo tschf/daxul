@@ -18,19 +18,45 @@ PROGRAM_UNDEFINED=3
 OJDBC_UNDEFINED=4
 USER_EXIT=5
 
-# Arguments
-EXPECTED_ARGS=7
+while [[ $# -gt 1 ]]; do
 
-# Database parameters
-APEX_PATH=$1
-DB_HOST=$2
-DB_PORT=$3
-DB_SID=$4
-SYSTEM_USER=SYSTEM
-SYSTEM_PASS=$5
-SYS_USER=SYS
-SYS_PASS=$6
-IMAGE_PATH=$7
+    key="$1"
+
+    case $key in
+        -h|--host)
+        DB_HOST=$2
+        ;;
+        -p|--port)
+        DB_PORT=$2
+        ;;
+        -s|--sid)
+        DB_SID=$2
+        ;;
+        -i|--images)
+        IMAGE_PATH=$2
+        ;;
+        -a|--apex)
+        APEX_PATH=$2
+        ;;
+        -du|--dbauser)
+        SYS_USER=$2
+        ;;
+        -dp|--dbapass)
+        SYS_PASS=$2
+        ;;
+        -sp|--systempass)
+        SYSTEM_PASS=$2
+        ;;
+        -su|--systemuser)
+        SYSTEM_USER=$2
+        ;;
+        *)
+        ;;
+    esac
+
+    shift
+
+done
 
 # Backup program paths/dependencies
 OJDBC_PATH=lib/ojdbc5.jar
@@ -52,7 +78,7 @@ RESTORE_SCRIPT=$(mktemp)
 RUN_AND_EXIT_SCRIPT=${SCRIPT_DIR}/runAndExit.sql
 
 print_usage(){
-    echo "daxul.sh /path/to/apex/install/files host port sid system_password sys_password /path/to/images/destination/"
+    echo "daxul.sh -h <db_server> -p <db_port> -s <db_sid> -i </path/to/images> -a </path/to/apex> -du <dba_user (e.g. sys)> -dp <dba_password> -su <system user (e.g. system> -sp <system password>" >&2
 }
 
 print_debug(){
@@ -69,8 +95,17 @@ print_debug(){
 }
 
 # Make sure the correct number of arguments were received
-if [[ $# -ne ${EXPECTED_ARGS} ]]; then
-    echo "Wrong number of args; Received $#; Expected ${EXPECTED_ARGS}" >&2
+if [[ -z ${DB_HOST}
+    || -z ${DB_PORT}
+    || -z ${DB_SID}
+    || -z ${SYSTEM_USER}
+    || -z ${SYSTEM_PASS}
+    || -z ${SYS_USER}
+    || -z ${SYS_PASS}
+    || -z ${IMAGE_PATH}
+    || -z ${APEX_PATH}
+]]; then
+    echo "Wrong number of args. Expected usage: " >&2
     print_usage
     exit ${INVALID_ARGS}
 fi
