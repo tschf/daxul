@@ -18,7 +18,7 @@ This should only be used for minor updates - major updates should be installed w
 Usage:
 
 ```
-sudo -E ./daxul.sh -a /path/to/apex/install/files -h localhost -p 1521 -s xe -su system -sp oracle -du sys -dp oracle -i /ords/apex_images/
+sudo -E ./daxul.sh -a /u01/app/oracle/product/11.2.0/xe/apex -h localhost -p 1521 -s xe -su system -sp oracle -du sys -dp oracle -i /ords/apex_images/
 ```
 
 Current caveats:
