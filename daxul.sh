@@ -160,12 +160,12 @@ while read WID; do
     java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${SYSTEM_USER} -password ${SYSTEM_PASS} -expWorkspace -workspaceid ${WID}
     java oracle.apex.APEXExport -db ${DB_HOST}:${DB_PORT}:${DB_SID} -user ${SYSTEM_USER} -password ${SYSTEM_PASS} -workspaceid ${WID}
 
-    NUM_APPS=$(ls -l ${WORKSPACE_BACKUP_DIR}/${WID} | wc -l)
+    NUM_APPS=$(ls -1 ${WORKSPACE_BACKUP_DIR}/${WID} | wc -l)
     TOTAL_APP_COUNT=$(($TOTAL_APP_COUNT+$NUM_APPS))
 
 done < ${WORKSPACE_ID_FILE}
 echo "Uninstalling"
-NUM_WORKSPACES=$(ls -l ${WORKSPACE_BACKUP_DIR} | wc -l)
+NUM_WORKSPACES=$(ls -1 ${WORKSPACE_BACKUP_DIR} | wc -l)
 echo "A total of ${NUM_WORKSPACES} workspaces were backed up, and ${TOTAL_APP_COUNT} applications".
 echo "You can view the backed up workspaces/applications at: ${WORKSPACE_BACKUP_DIR}"
 echo "You can view the backed up instance config at: ${PRE_INSTANCE_CONFIG_FILE}"
