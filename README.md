@@ -18,7 +18,7 @@ This should only be used for minor updates - major updates should be installed w
 Usage:
 
 ```
-sudo -E ./daxul.sh /path/to/apex/install/files host port sid system_password sys_password /path/to/images/destination/
+sudo -E ./daxul.sh -a /path/to/apex/install/files -h localhost -p 1521 -s xe -su system -sp oracle -du sys -dp oracle -i /ords/apex_images/
 ```
 
 Current caveats:
