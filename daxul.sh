@@ -188,7 +188,7 @@ echo "Installing APEX"
 # script is referencing other scripts - but expecting them in the same current
 # working directory.
 cd ${APEX_PATH}
-sqlplus sys/oracle@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${APEX_PATH}/apexins.sql SYSAUX SYSAUX TEMP /i/
+sqlplus ${SYS_USER}/${SYS_PASS}@//${DB_HOST}:${DB_PORT}/${DB_SID} as sysdba @${APEX_PATH}/apexins.sql SYSAUX SYSAUX TEMP /i/
 
 echo "Updating images"
 sudo rm -rf ${IMAGE_PATH}/*
